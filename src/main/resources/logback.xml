@@ -1,0 +1,33 @@
+<!-- Kindly note that this file should be put under the application classpath, e.g. in Tomcat the "${catalina.base}/lib/". Reference https://logback.qos.ch/manual/configuration.html. -->
+<configuration scan="true" scanPeriod="30 seconds">
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender" withJansi="true">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date %level %class::%method @line#%line [%thread] %message%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <file>${catalina.base}/logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/app-%d{yyyy-MM-dd}.log.%i</fileNamePattern>
+            <maxFileSize>64MB</maxFileSize>
+            <totalSizeCap>16GB</totalSizeCap>
+            <maxHistory>64</maxHistory>
+        </rollingPolicy>
+        <append>true</append>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date %level %class::%method @line#%line [%thread] %message%n</pattern>
+        </layout>
+    </appender>
+
+    <!-- Level filters of individual appenders below are specified respectively. -->
+    <root>
+        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="Console"/>
+    </root>
+
+</configuration>

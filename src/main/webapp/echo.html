@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <title>ws-servlet-sample-tomcat8</title>
+</head>
+<body>
+<form>
+    <fieldset>
+        <legend>Echo</legend>
+        <input id="txtMessage" type="text"><br>
+        <input onclick="doCloseConnection();" value="Disconnect" type="button">
+        <input onclick="doSendMessage();" value="Send" type="button">
+        <br>
+        <textarea  id="txtAreaEcho" rows="5" cols="30">
+	</textarea>
+    </fieldset>
+</form>
+<script type="text/javascript">
+    var warArchiveBareName = "ws-servlet-sample"; // From `<proj-root>/build.gradle`.
+    var wsEndpointName = "/echo"; // From `<proj-root>/src/main/java/ws/sample/endpoint/Echo.java`.
+    //var webSocket = new WebSocket("ws://" + window.location.host + "/" + warArchiveBareName + "/" + wsEndpointName);
+    var webSocket = new WebSocket("ws://" + window.location.host + "/" + wsEndpointName);
+    var txtAreaEcho = document.getElementById("txtAreaEcho");
+    txtAreaEcho.value = "";
+    var msg = document.getElementById("txtMessage");
+    webSocket.onopen = function(msgEvent) {
+        txtAreaEcho.value += "Connected ... \n";
+    };
+    webSocket.onmessage = function(msgEvent) {
+        txtAreaEcho.value += "Server : " + msgEvent.data + "\n";
+    };
+    webSocket.onclose = function(msgEvent) {
+        txtAreaEcho.value += "Disconnect ... \n";
+    };
+    webSocket.onerror = function(msgEvent) {
+        txtAreaEcho.value += "Error ... \n";
+    };
+    /**
+     *  Send Message
+     */
+    function doSendMessage() {
+        webSocket.send(msg.value);
+        txtAreaEcho.value += "Client : " + msg.value + "\n";
+        msg.value = "";
+    }
+    /**
+     *  Close Connection
+     */
+    function doCloseConnection() {
+        webSocket.close();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+group 'org.alterac'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: "war"
+
+repositories {
+    flatDir { dirs "lib" }
+    jcenter()
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java { srcDir 'src/main/java' }
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java"]
+        }
+    }
+}
+
+project.webAppDirName = "src/main/webapp"
+
+def slf4jVer = "1.7.25"
+def logbackVer = "1.2.3"
+def logbackLogStashAdapterVer = "4.11"
+
+def mockitoVersion = '1.10.+'
+def testNgVersion = '6.+'
+
+def servletApiVersion = '2.5'
+def wsApiVersion = '1.1'
+def tomcatVersion = '8.0.24'
+
+dependencies {
+    // Slf4j-api.
+    compile group: "org.slf4j", name: "slf4j-api", version: "${slf4jVer}"
+
+    compile "org.mybatis:mybatis:3.4.5"
+    compile "org.postgresql:postgresql:42.2.1"
+
+    // Logback as Sfl4j-api implementation.
+    compile group: "ch.qos.logback", name: "logback-classic", version: "${logbackVer}"
+    compile group: "ch.qos.logback", name: "logback-core", version: "${logbackVer}"
+
+    // General java servlet-api dependencies.
+    providedCompile group: 'javax.servlet', name: 'servlet-api', version: "${servletApiVersion}"
+    providedCompile group: 'javax.websocket', name: 'javax.websocket-api', version: "${wsApiVersion}"
+
+    // Tomcat servlet api dependencies.
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-servlet-api', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-jsp-api', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-juli', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-annotations-api', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-api', version: "${tomcatVersion}"
+
+    // Tomcat servlet impl dependencies.
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-catalina', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-jni', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-coyote', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-util', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-util-scan', version: "${tomcatVersion}"
+    providedCompile group: 'org.apache.tomcat', name: 'tomcat-websocket', version: "${tomcatVersion}"
+
+    // Test dependencies.
+    testCompile group: 'org.testng', name: 'testng', version: testNgVersion
+    testCompile group: 'org.mockito', name: 'mockito-all', version: mockitoVersion
+}
+
+def warArchiveBareName = 'ws-servlet-sample'
+war {
+    archiveName "${warArchiveBareName}.war"
+}
+
+test {
+    // enable TestNG support (default is JUnit)
+    useTestNG()
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+}
