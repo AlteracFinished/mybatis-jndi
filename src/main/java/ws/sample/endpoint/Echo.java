@@ -9,6 +9,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
 
+import jndi.sample.MybatisSessionFactory;
 import jndi.sample.dao.ItemDao;
 import jndi.sample.entity.Item;
 import org.apache.ibatis.io.Resources;
@@ -42,7 +43,7 @@ public class Echo {
     public void onMessage(String message, Session session) {
         logger.info("Message from {}: {}", session.getId() , message);
         try {
-            SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream("mybatis-config.xml"));
+            SqlSessionFactory factory = MybatisSessionFactory.getSqlSessionFactory();
             SqlSession sqlSession = factory.openSession();
             ItemDao itemDao = sqlSession.getMapper(ItemDao.class);
             Item item = itemDao.getItemById(Long.parseLong(message));
