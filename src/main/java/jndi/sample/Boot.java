@@ -3,6 +3,8 @@ package jndi.sample;
 
 import org.apache.catalina.core.ApplicationContextFacade;
 import org.apache.catalina.core.StandardContext;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp2.PoolingDataSource;
 import org.apache.ibatis.datasource.jndi.JndiDataSourceFactory;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.mapping.Environment;
@@ -23,6 +25,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
+import java.sql.Driver;
 import java.util.Properties;
 
 
@@ -37,15 +40,19 @@ public class Boot implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        PooledDataSource dataSource = new PooledDataSource();
+        BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDefaultAutoCommit(true);
-        dataSource.setDriver(System.getenv("JDBC.Driver"));
+        try {
+            dataSource.setDriver(((Driver) Class.forName(System.getenv("JDBC.Driver")).newInstance()));
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
         dataSource.setUrl(System.getenv("JDBC.ConnectionURL"));
         dataSource.setUsername(System.getenv("JDBC.Username"));
         dataSource.setPassword(System.getenv("JDBC.Password"));
-        dataSource.setPoolMaximumIdleConnections(30);
-        dataSource.setPoolMaximumActiveConnections(100);
-        dataSource.setPoolMaximumCheckoutTime(10000);
+        dataSource.setMaxIdle(30);
+        dataSource.setMaxConnLifetimeMillis(10000);
+        dataSource.setMaxTotal(100);
         Boot.dataSource=dataSource;
         JdbcTransactionFactory transactionFactory = new JdbcTransactionFactory();
         Environment environment = new Environment("dev",transactionFactory,dataSource);

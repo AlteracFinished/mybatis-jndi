@@ -39,6 +39,7 @@ dependencies {
 
     compile "org.mybatis:mybatis:3.4.5"
     compile "org.postgresql:postgresql:42.2.1"
+    compile "org.apache.commons:commons-dbcp2:2.2.0"
 
     // Logback as Sfl4j-api implementation.
     compile group: "ch.qos.logback", name: "logback-classic", version: "${logbackVer}"
