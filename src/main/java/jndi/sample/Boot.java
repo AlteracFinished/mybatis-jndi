@@ -31,10 +31,8 @@ public class Boot implements ServletContextListener {
 
     private static Logger logger = LoggerFactory.getLogger(Boot.class);
 
-    //@Resource(name = "jdbc/datasource")
     private static DataSource dataSource;
 
-    //@Resource(name = "jdbc/sqlSessionFactory")
     private static SqlSessionFactory sqlSessionFactory;
 
     @Override
