@@ -9,13 +9,10 @@ import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.Session;
 
-import jndi.sample.MybatisSessionFactory;
+import jndi.sample.Boot;
 import jndi.sample.dao.ItemDao;
 import jndi.sample.entity.Item;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +40,7 @@ public class Echo {
     public void onMessage(String message, Session session) {
         logger.info("Message from {}: {}", session.getId() , message);
         try {
-            SqlSessionFactory factory = MybatisSessionFactory.getSqlSessionFactory();
-            SqlSession sqlSession = factory.openSession();
+            SqlSession sqlSession = Boot.getSqlSessionFactory().openSession();
             ItemDao itemDao = sqlSession.getMapper(ItemDao.class);
             Item item = itemDao.getItemById(Long.parseLong(message));
             session.getBasicRemote().sendText(item.getName());

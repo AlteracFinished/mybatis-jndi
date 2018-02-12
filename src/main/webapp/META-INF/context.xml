@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context>
-    <Resource name="jdbc/mybatis-jndi" auth="Container" type="javax.sql.DataSource"
-              maxActive="100" maxIdle="30" maxWait="10000" username=""
-              password="" driverClassName="org.postgresql.Driver"
-              url="" />
-</Context>
